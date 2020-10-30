@@ -175,7 +175,8 @@ const MediaSlider = (props) => {
             top: 0,
             left: 0,
             width: "100%",
-            minHeight: "100vh",
+            height: "100vh",
+            overflow: "auto",
             backgroundColor: '#202020',
           }}
         >

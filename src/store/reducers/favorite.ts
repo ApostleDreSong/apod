@@ -1,17 +1,17 @@
 import { ADD_FAVORITE, REMOVE_FAVORITE } from "../constants";
 
- export interface Message {
+ export interface ApodObject {
    [key: string]: any;
  }
 
  export interface Action {
    type: string;
-   payload: Message;
+   payload: ApodObject;
  }
 
- const initialState: Message[] = [];
+ const initialState: ApodObject[] = [];
 
- export const favorites = (state: Message[] = initialState, action: Action) => {
+ export const favorites = (state: ApodObject[] = initialState, action: Action) => {
    let newState = [...state];
    switch (action.type) {
      case ADD_FAVORITE:
