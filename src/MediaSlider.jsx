@@ -4,7 +4,8 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { connect } from "react-redux";
-import { addFavorite, removeFavorite } from "./store/actions/favorite";
+import { addFavorite } from "./store/actions/favorite";
+import FavoritesComponent from "./FavoritesComponent";
 
 const ApiKey = process.env.REACT_APP_APIKEY;
 
@@ -22,6 +23,7 @@ const MediaSlider = (props) => {
   const [selectedDate, setSelectedDate] = useState(todayDate);
   const [errorfetching, setErrorFetching] = useState(false);
   const [podRes, setPodRes] = useState();
+  const [showFav, setShowFav] = useState(false);
 
   useEffect(() => {
     if (selectedDate) {
@@ -70,8 +72,12 @@ const MediaSlider = (props) => {
   };
 
   const viewFavorites = () => {
-    
-  }
+    setShowFav(true);
+  };
+
+  const closeModal = () => {
+    setShowFav(false);
+  };
 
   return (
     <Container>
@@ -138,9 +144,7 @@ const MediaSlider = (props) => {
                 )
                   ? "#0000FF"
                   : "white",
-                color: props.favorites.some(
-                  (ele) => ele.date === podRes.date
-                )
+                color: props.favorites.some((ele) => ele.date === podRes.date)
                   ? "white"
                   : "black",
               }}
@@ -164,6 +168,20 @@ const MediaSlider = (props) => {
       >
         {podRes && podRes.explanation}
       </div>
+      {showFav ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            minHeight: "100vh",
+            backgroundColor: '#202020',
+          }}
+        >
+          <FavoritesComponent closeModal={closeModal} />
+        </div>
+      ) : null}
     </Container>
   );
 };
@@ -178,10 +196,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addFav: (details) => {
       dispatch(addFavorite(details));
-    },
-    removeFav: (date) => {
-      dispatch(removeFavorite(date));
-    },
+    }
   };
 };
 
