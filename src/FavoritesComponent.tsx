@@ -1,7 +1,7 @@
 import { Button, Container, Grid, MenuItem, Select } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
-import { removeFavorite } from "./store/actions/favorite";
+import { removeFavorite, removeAllFavorite } from "./store/actions/favorite";
 import { RootState } from "./store/reducers/index";
 import { Dispatch } from "./store/index";
 import CloseIcon from "./assets/close.svg";
@@ -66,6 +66,12 @@ function FavoritesComponent(props: Props) {
     setDetails({});
   }
 
+  const deleteAllFav = () => {
+    props.removeAllFav();
+    setSelectedFav("");
+    setDetails({});
+  }
+
   return (
     <Container style={styles.main}>
       <Grid container justify="flex-end" alignItems="center" onClick={() => closeMe()} style={styles.close}>
@@ -105,7 +111,7 @@ function FavoritesComponent(props: Props) {
       }
       {
         props.favorites.length > 0 ?
-          <Button variant="contained" >Delete All Favorites</Button>
+          <Button onClick={deleteAllFav} variant="contained" >Delete All Favorites</Button>
           : null
       }
     </Container>
@@ -123,6 +129,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     removeFav: (date: string) => {
       dispatch(removeFavorite(date));
     },
+    removeAllFav: () => {
+      dispatch(removeAllFavorite())
+    }
   };
 };
 
