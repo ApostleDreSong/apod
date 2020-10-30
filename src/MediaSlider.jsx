@@ -3,20 +3,25 @@ import React, { useState, useEffect } from "react";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
+import { connect } from "react-redux";
+import { addFavorite, removeFavorite } from "./store/actions/favorite";
 
-const ApiKey = "TB8ckj3tPFEz2131JKRgeGdH2h2dTlV1bmVaszgt";
+const ApiKey = process.env.REACT_APP_APIKEY;
 
-export default function MediaSlider() {
-  const [selectedDay, setSelectedDay] = useState();
-  const [selectedDate, setSelectedDate] = useState();
+const formatter = (d) => {
+  return `${d.getFullYear()}-${(d.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+};
+
+const today = new Date();
+const todayDate = formatter(today);
+
+const MediaSlider = (props) => {
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedDate, setSelectedDate] = useState(todayDate);
   const [errorfetching, setErrorFetching] = useState(false);
-  const [podRes, setPodRes] = useState({});
-
-  useEffect(() => {
-    const today = new Date();
-    setSelectedDay(today);
-    createDate(today);
-  }, []);
+  const [podRes, setPodRes] = useState();
 
   useEffect(() => {
     if (selectedDate) {
@@ -25,12 +30,11 @@ export default function MediaSlider() {
           `https://api.nasa.gov/planetary/apod?date=${selectedDate}&hd=false&api_key=${ApiKey}`
         )
         .then((res) => {
-          console.log(res.data);
           setPodRes(res.data);
           setErrorFetching(false);
         })
         .catch((err) => {
-          setPodRes({});
+          setPodRes();
           setErrorFetching(true);
         });
     }
@@ -51,25 +55,33 @@ export default function MediaSlider() {
   };
 
   const createDate = (d) => {
-    const date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    const date = formatter(d);
     setSelectedDate(date);
   };
 
   const changeDate = (e) => {
     var convertedDate = new Date(e.target.value);
     setSelectedDay(convertedDate);
-    createDate(convertedDate);
+    setSelectedDate(e.target.value);
   };
+
+  const addToFav = () => {
+    props.addFav(podRes);
+  };
+
+  const viewFavorites = () => {
+    
+  }
 
   return (
     <Container>
       <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
-        {podRes.title}
+        {podRes && podRes.title}
       </h2>
       <Grid container alignItems="center" justify="space-between">
         <Grid
           item
-          md={3}
+          sm={3}
           style={{ cursor: "pointer", textAlign: "center" }}
           onClick={() => mediaLeft()}
         >
@@ -78,11 +90,11 @@ export default function MediaSlider() {
         </Grid>
         <Grid
           item
-          md={6}
+          sm={6}
           style={{
             overflow: "hidden",
             height: "500px",
-            border: errorfetching?"1px solid black":"none",
+            border: errorfetching ? "1px solid black" : "none",
           }}
         >
           {errorfetching ? (
@@ -98,12 +110,12 @@ export default function MediaSlider() {
               Oops! No image today
             </div>
           ) : (
-            <img width="100%" src={podRes.url} />
+            <img width="100%" src={podRes && podRes.url} />
           )}
         </Grid>
         <Grid
           item
-          md={3}
+          sm={3}
           style={{ cursor: "pointer", textAlign: "center" }}
           onClick={() => mediaRight()}
         >
@@ -114,7 +126,33 @@ export default function MediaSlider() {
       <Grid container justify="center" style={{ marginTop: "20px" }}>
         <Grid item container justify="space-between" md={6}>
           <Grid item>
-            <Button variant="outlined">Set Favorite</Button>
+            <Button
+              variant={
+                props.favorites.some((ele) => ele.date === podRes.date)
+                  ? "contained"
+                  : "outlined"
+              }
+              style={{
+                backgroundColor: props.favorites.some(
+                  (ele) => ele.date === podRes.date
+                )
+                  ? "#0000FF"
+                  : "white",
+                color: props.favorites.some(
+                  (ele) => ele.date === podRes.date
+                )
+                  ? "white"
+                  : "black",
+              }}
+              onClick={addToFav}
+            >
+              Set Favorite
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="outlined" onClick={viewFavorites}>
+              View Favorites
+            </Button>
           </Grid>
           <Grid item>
             <TextField type="date" value={selectedDate} onChange={changeDate} />
@@ -124,8 +162,27 @@ export default function MediaSlider() {
       <div
         style={{ textAlign: "center", lineHeight: "26px", margin: "20px 50px" }}
       >
-        {podRes.explanation}
+        {podRes && podRes.explanation}
       </div>
     </Container>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    favorites: state.favorites,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addFav: (details) => {
+      dispatch(addFavorite(details));
+    },
+    removeFav: (date) => {
+      dispatch(removeFavorite(date));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MediaSlider);
