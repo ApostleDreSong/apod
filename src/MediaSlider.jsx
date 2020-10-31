@@ -135,12 +135,25 @@ const MediaSlider = (props) => {
         >
           <ArrowBackIcon fontSize="large" />
           <p>Prev Day</p>
-          <img
-            src={yesterdaysPreview.url}
-            alt={yesterdaysPreview.title}
-            width="50px"
-            height="50px"
-          />
+          {ydayErr ? (
+            <div
+              style={{
+                width: "50px",
+                height: "50px",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              No picture Yesterday
+            </div>
+          ) : (
+            <img
+              src={yesterdaysPreview.url}
+              alt={yesterdaysPreview.title}
+              width="50px"
+              height="50px"
+            />
+          )}
         </Grid>
         <Grid
           item
@@ -175,12 +188,25 @@ const MediaSlider = (props) => {
         >
           <ArrowForwardIcon fontSize="large" />
           <p>Next Day</p>
-          <img
-            src={tomorrowsPreview.url}
-            alt={tomorrowsPreview.title}
-            width="50px"
-            height="50px"
-          />
+          {tmrErr ? (
+            <div
+              style={{
+                width: "50px",
+                height: "50px",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              No picture Tomorrow
+            </div>
+          ) : (
+            <img
+              src={tomorrowsPreview.url}
+              alt={tomorrowsPreview.title}
+              width="50px"
+              height="50px"
+            />
+          )}
         </Grid>
       </Grid>
       <Grid container justify="center" style={{ marginTop: "20px" }}>
