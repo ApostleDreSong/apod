@@ -36,7 +36,6 @@ interface Ele {
 
 function FavoritesComponent(props: Props) {
   const [selectedFav, setSelectedFav] = useState<unknown>("");
-  // const [allFavs, setAllFavs] = useState<{ [key: string]: any }[]>([]);
   const [details, setDetails] = useState<{ [key: string]: any }>({})
 
   useEffect(() => {

@@ -4,8 +4,9 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { connect } from "react-redux";
-import { addFavorite } from "./store/actions/favorite";
+import { addFavorite, updateFromFirestore } from "./store/actions/favorite";
 import FavoritesComponent from "./FavoritesComponent";
+import saveToLocalStorage from "./saveToLocalStorage";
 
 const ApiKey = process.env.REACT_APP_APIKEY;
 
@@ -30,12 +31,17 @@ const MediaSlider = (props) => {
   const [tmrErr, setTmrErr] = useState(false);
 
   useEffect(() => {
+    props.updateFromFirestore();
+  }, []);
+
+  useEffect(() => {
     if (selectedDate) {
       axios
         .get(
           `https://api.nasa.gov/planetary/apod?date=${selectedDate}&hd=false&api_key=${ApiKey}`
         )
         .then((res) => {
+          saveToLocalStorage(res.data);
           setPodRes(res.data);
           setErrorFetching(false);
         })
@@ -94,8 +100,10 @@ const MediaSlider = (props) => {
     //calculating tomorrow's date
     var d = new Date(+selectedDay);
     d.setDate(d.getDate() + 1);
-    setSelectedDay(d);
-    createDate(d);
+    if (d <= today) {
+      setSelectedDay(d);
+      createDate(d);
+    }
   };
 
   const createDate = (d) => {
@@ -277,6 +285,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addFav: (details) => {
       dispatch(addFavorite(details));
+    },
+    updateFromFirestore: () => {
+      dispatch(updateFromFirestore());
     },
   };
 };
