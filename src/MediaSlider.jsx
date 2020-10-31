@@ -24,6 +24,10 @@ const MediaSlider = (props) => {
   const [errorfetching, setErrorFetching] = useState(false);
   const [podRes, setPodRes] = useState();
   const [showFav, setShowFav] = useState(false);
+  const [yesterdaysPreview, setYesterdaysPreview] = useState({});
+  const [tomorrowsPreview, setTomorrowsPreview] = useState({});
+  const [ydayErr, setYdayErr] = useState(false);
+  const [tmrErr, setTmrErr] = useState(false);
 
   useEffect(() => {
     if (selectedDate) {
@@ -42,17 +46,55 @@ const MediaSlider = (props) => {
     }
   }, [selectedDate]);
 
-  const mediaLeft = () => {
+  useEffect(() => {
+    ///Get preview for previous day
+    let yday = new Date(+selectedDay);
+    yday.setDate(yday.getDate() - 1);
+    let yesterday = formatter(yday);
+
+    axios
+      .get(
+        `https://api.nasa.gov/planetary/apod?date=${yesterday}&hd=false&api_key=${ApiKey}`
+      )
+      .then((res) => {
+        setYesterdaysPreview(res.data);
+        setYdayErr(false);
+      })
+      .catch((err) => {
+        setYdayErr(true);
+      });
+
+    ///Get preview for next day
+    let tm = new Date(+selectedDay);
+    tm.setDate(tm.getDate() + 1);
+    let tmr = formatter(tm);
+
+    axios
+      .get(
+        `https://api.nasa.gov/planetary/apod?date=${tmr}&hd=false&api_key=${ApiKey}`
+      )
+      .then((res) => {
+        setTomorrowsPreview(res.data);
+        setTmrErr(false);
+      })
+      .catch((err) => {
+        setTmrErr(true);
+      });
+  }, [selectedDay]);
+
+  const previousDay = () => {
     //calculating yesterdays date
-    var d = selectedDay;
+    var d = new Date(+selectedDay);
     d.setDate(d.getDate() - 1);
+    setSelectedDay(d);
     createDate(d);
   };
 
-  const mediaRight = () => {
+  const nextDay = () => {
     //calculating tomorrow's date
-    var d = selectedDay;
+    var d = new Date(+selectedDay);
     d.setDate(d.getDate() + 1);
+    setSelectedDay(d);
     createDate(d);
   };
 
@@ -62,7 +104,7 @@ const MediaSlider = (props) => {
   };
 
   const changeDate = (e) => {
-    var convertedDate = new Date(e.target.value);
+    let convertedDate = new Date(e.target.value);
     setSelectedDay(convertedDate);
     setSelectedDate(e.target.value);
   };
@@ -89,10 +131,16 @@ const MediaSlider = (props) => {
           item
           sm={3}
           style={{ cursor: "pointer", textAlign: "center" }}
-          onClick={() => mediaLeft()}
+          onClick={() => previousDay()}
         >
           <ArrowBackIcon fontSize="large" />
           <p>Prev Day</p>
+          <img
+            src={yesterdaysPreview.url}
+            alt={yesterdaysPreview.title}
+            width="50px"
+            height="50px"
+          />
         </Grid>
         <Grid
           item
@@ -123,10 +171,16 @@ const MediaSlider = (props) => {
           item
           sm={3}
           style={{ cursor: "pointer", textAlign: "center" }}
-          onClick={() => mediaRight()}
+          onClick={() => nextDay()}
         >
           <ArrowForwardIcon fontSize="large" />
           <p>Next Day</p>
+          <img
+            src={tomorrowsPreview.url}
+            alt={tomorrowsPreview.title}
+            width="50px"
+            height="50px"
+          />
         </Grid>
       </Grid>
       <Grid container justify="center" style={{ marginTop: "20px" }}>
@@ -177,7 +231,7 @@ const MediaSlider = (props) => {
             width: "100%",
             height: "100vh",
             overflow: "auto",
-            backgroundColor: '#202020',
+            backgroundColor: "#202020",
           }}
         >
           <FavoritesComponent closeModal={closeModal} />
@@ -197,7 +251,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addFav: (details) => {
       dispatch(addFavorite(details));
-    }
+    },
   };
 };
 
