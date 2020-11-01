@@ -1,4 +1,4 @@
-const saveToLocalStorage = require("./src/saveToLocalStorage");
+const {saveToLocalStorage} = require("./src/saveToLocalStorage");
 const axios = require("axios");
 
 // const ApiKey = process.env.REACT_APP_APIKEY;
@@ -21,12 +21,7 @@ describe("Save Function", () => {
         `https://api.nasa.gov/planetary/apod?date=${yesterday}&hd=false&api_key=${ApiKey}`
       )
       .then((res) => {
-        jest.fn(() => saveToLocalStorage(res.data));
-        let savedPhoto = JSON.parse(
-          global.localStorage.getItem("photoOfTheDay")
-        );
-        console.log(savedPhoto);
-        // expect(savedPhoto.date).toBe(yesterday);
+        expect(saveToLocalStorage(res.data)).toBe("saved");
       });
   });
 });

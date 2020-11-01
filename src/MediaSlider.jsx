@@ -4,9 +4,12 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { connect } from "react-redux";
-import { addFavorite, updateFromFirestore } from "./store/actions/favorite";
+import {
+  addFavorite,
+  removeFavorite, updateFromFirestore,
+} from "./store/actions/favorite";
 import FavoritesComponent from "./FavoritesComponent";
-import saveToLocalStorage from "./saveToLocalStorage";
+import { saveToLocalStorage } from "./saveToLocalStorage";
 
 const ApiKey = process.env.REACT_APP_APIKEY;
 
@@ -23,7 +26,7 @@ const MediaSlider = (props) => {
   const [selectedDay, setSelectedDay] = useState(today);
   const [selectedDate, setSelectedDate] = useState(todayDate);
   const [errorfetching, setErrorFetching] = useState(false);
-  const [podRes, setPodRes] = useState();
+  const [podRes, setPodRes] = useState({});
   const [showFav, setShowFav] = useState(false);
   const [yesterdaysPreview, setYesterdaysPreview] = useState({});
   const [tomorrowsPreview, setTomorrowsPreview] = useState({});
@@ -129,6 +132,10 @@ const MediaSlider = (props) => {
     setShowFav(false);
   };
 
+  const removeFromFav = () => {
+    props.removeFav(podRes.date);
+  };
+
   return (
     <Container>
       <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
@@ -222,23 +229,33 @@ const MediaSlider = (props) => {
           <Grid item>
             <Button
               variant={
+                podRes &&
                 props.favorites.some((ele) => ele.date === podRes.date)
                   ? "contained"
                   : "outlined"
               }
               style={{
-                backgroundColor: props.favorites.some(
-                  (ele) => ele.date === podRes.date
-                )
-                  ? "#0000FF"
-                  : "white",
-                color: props.favorites.some((ele) => ele.date === podRes.date)
-                  ? "white"
-                  : "black",
+                backgroundColor:
+                  podRes &&
+                  props.favorites.some((ele) => ele.date === podRes.date)
+                    ? "#0000FF"
+                    : "white",
+                color:
+                  podRes &&
+                  props.favorites.some((ele) => ele.date === podRes.date)
+                    ? "white"
+                    : "black",
               }}
-              onClick={addToFav}
+              onClick={
+                podRes &&
+                props.favorites.some((ele) => ele.date === podRes.date)
+                  ? removeFromFav
+                  : addToFav
+              }
             >
-              Set Favorite
+              {podRes && props.favorites.some((ele) => ele.date === podRes.date)
+                ? "Remove from Favorites"
+                : "Set Favorite"}
             </Button>
           </Grid>
           <Grid item>
@@ -285,6 +302,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addFav: (details) => {
       dispatch(addFavorite(details));
+    },
+    removeFav: (date) => {
+      dispatch(removeFavorite(date));
     },
     updateFromFirestore: () => {
       dispatch(updateFromFirestore());

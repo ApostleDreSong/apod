@@ -5,7 +5,7 @@ import { removeFavorite, removeAllFavorite } from "./store/actions/favorite";
 import { RootState } from "./store/reducers/index";
 import { Dispatch } from "./store/index";
 import CloseIcon from "./assets/close.svg";
-import { ApodObject } from "./store/reducers/favorite"
+import { ApodObject } from "./store/reducers/favorite";
 
 const styles = {
   close: {
