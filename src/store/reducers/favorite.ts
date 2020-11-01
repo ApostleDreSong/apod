@@ -2,7 +2,6 @@ import {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
   REMOVE_ALL_FAVORITE,
-  UPDATE_FROM_FIRESTORE
 } from "../constants";
 
 import firebase from "firebase";

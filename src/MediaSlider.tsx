@@ -6,15 +6,16 @@ import axios from "axios";
 import { connect } from "react-redux";
 import {
   addFavorite,
-  removeFavorite,
-  updateFromFirestore,
+  removeFavorite
 } from "./store/actions/favorite";
 import FavoritesComponent from "./FavoritesComponent";
 import { saveToLocalStorage } from "./saveToLocalStorage";
+import { Dispatch } from "./store/index";
+import { RootState } from "./store/reducers/index";
 
 const ApiKey = process.env.REACT_APP_APIKEY;
 
-const formatter = (d) => {
+const formatter = (d: Date) => {
   return `${d.getFullYear()}-${(d.getMonth() + 1)
     .toString()
     .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
@@ -23,14 +24,18 @@ const formatter = (d) => {
 const today = new Date();
 const todayDate = formatter(today);
 
-const MediaSlider = (props) => {
+interface GeneralObject {
+  [key: string]: any
+}
+
+const MediaSlider: React.FunctionComponent<GeneralObject> = (props) => {
   const [selectedDay, setSelectedDay] = useState(today);
   const [selectedDate, setSelectedDate] = useState(todayDate);
   const [errorfetching, setErrorFetching] = useState(false);
-  const [podRes, setPodRes] = useState({});
+  const [podRes, setPodRes] = useState<GeneralObject>({});
   const [showFav, setShowFav] = useState(false);
-  const [yesterdaysPreview, setYesterdaysPreview] = useState({});
-  const [tomorrowsPreview, setTomorrowsPreview] = useState({});
+  const [yesterdaysPreview, setYesterdaysPreview] = useState<GeneralObject>({});
+  const [tomorrowsPreview, setTomorrowsPreview] = useState<GeneralObject>({});
   const [ydayErr, setYdayErr] = useState(false);
   const [tmrErr, setTmrErr] = useState(false);
 
@@ -50,7 +55,7 @@ const MediaSlider = (props) => {
           setErrorFetching(false);
         })
         .catch((err) => {
-          setPodRes();
+          setPodRes({});
           setErrorFetching(true);
         });
     }
@@ -110,12 +115,12 @@ const MediaSlider = (props) => {
     }
   };
 
-  const createDate = (d) => {
+  const createDate = (d: Date) => {
     const date = formatter(d);
     setSelectedDate(date);
   };
 
-  const changeDate = (e) => {
+  const changeDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     let convertedDate = new Date(e.target.value);
     setSelectedDay(convertedDate);
     setSelectedDate(e.target.value);
@@ -154,7 +159,6 @@ const MediaSlider = (props) => {
           {ydayErr ? (
             <div
               style={{
-                width: "50px",
                 height: "50px",
                 width: "100%",
                 textAlign: "center",
@@ -207,7 +211,6 @@ const MediaSlider = (props) => {
           {tmrErr ? (
             <div
               style={{
-                width: "50px",
                 height: "50px",
                 width: "100%",
                 textAlign: "center",
@@ -232,31 +235,31 @@ const MediaSlider = (props) => {
               <Button
                 variant={
                   podRes &&
-                  props.favorites.some((ele) => ele.date === podRes.date)
+                    props.favorites.some((ele: GeneralObject) => ele.date === podRes.date)
                     ? "contained"
                     : "outlined"
                 }
                 style={{
                   backgroundColor:
                     podRes &&
-                    props.favorites.some((ele) => ele.date === podRes.date)
+                      props.favorites.some((ele: GeneralObject) => ele.date === podRes.date)
                       ? "#0000FF"
                       : "white",
                   color:
                     podRes &&
-                    props.favorites.some((ele) => ele.date === podRes.date)
+                      props.favorites.some((ele: GeneralObject) => ele.date === podRes.date)
                       ? "white"
                       : "black",
                 }}
                 onClick={
                   podRes &&
-                  props.favorites.some((ele) => ele.date === podRes.date)
+                    props.favorites.some((ele: GeneralObject) => ele.date === podRes.date)
                     ? removeFromFav
                     : addToFav
                 }
               >
                 {podRes &&
-                props.favorites.some((ele) => ele.date === podRes.date)
+                  props.favorites.some((ele: GeneralObject) => ele.date === podRes.date)
                   ? "Remove from Favorites"
                   : "Add to Favorites"}
               </Button>
@@ -296,23 +299,20 @@ const MediaSlider = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     favorites: state.favorites,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    addFav: (details) => {
+    addFav: (details: GeneralObject) => {
       dispatch(addFavorite(details));
     },
-    removeFav: (date) => {
+    removeFav: (date: string) => {
       dispatch(removeFavorite(date));
-    },
-    updateFromFirestore: () => {
-      dispatch(updateFromFirestore());
-    },
+    }
   };
 };
 

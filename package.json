@@ -67,6 +67,9 @@
     "transform": {
       "^.+\\.svg$": "jest-svg-transformer",
       "^.+\\.jsx?$": "babel-jest"
-    }
+    },
+    "setupFiles": [
+      "./src/saveToLocalStorage"
+    ]
   }
 }

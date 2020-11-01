@@ -1,5 +1,5 @@
 import React from 'react';
-import MediaSlider from "./MediaSlider.jsx";
+import MediaSlider from "./MediaSlider";
 
 function App() {
   return (

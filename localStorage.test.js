@@ -1,24 +1,16 @@
 const {saveToLocalStorage} = require("./src/saveToLocalStorage");
 const axios = require("axios");
+require("dotenv").config();
 
-// const ApiKey = process.env.REACT_APP_APIKEY;
-const ApiKey = "TB8ckj3tPFEz2131JKRgeGdH2h2dTlV1bmVaszgt";
+const ApiKey = process.env.REACT_APP_APIKEY;
 
-const formatter = (d) => {
-  return `${d.getFullYear()}-${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-};
-
-const yday = new Date();
-yday.setDate(yday.getDate() - 1);
-const yesterday = formatter(yday);
+const date = "2020-10-31";
 
 describe("Save Function", () => {
   it("it should save API response data to local storage", () => {
     return axios
       .get(
-        `https://api.nasa.gov/planetary/apod?date=${yesterday}&hd=false&api_key=${ApiKey}`
+        `https://api.nasa.gov/planetary/apod?date=${date}&hd=false&api_key=${ApiKey}`
       )
       .then((res) => {
         expect(saveToLocalStorage(res.data)).toBe("saved");
