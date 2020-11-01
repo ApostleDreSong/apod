@@ -6,7 +6,8 @@ import axios from "axios";
 import { connect } from "react-redux";
 import {
   addFavorite,
-  removeFavorite, updateFromFirestore,
+  removeFavorite,
+  updateFromFirestore,
 } from "./store/actions/favorite";
 import FavoritesComponent from "./FavoritesComponent";
 import { saveToLocalStorage } from "./saveToLocalStorage";
@@ -226,38 +227,41 @@ const MediaSlider = (props) => {
       </Grid>
       <Grid container justify="center" style={{ marginTop: "20px" }}>
         <Grid item container justify="space-between" md={6}>
-          <Grid item>
-            <Button
-              variant={
-                podRes &&
-                props.favorites.some((ele) => ele.date === podRes.date)
-                  ? "contained"
-                  : "outlined"
-              }
-              style={{
-                backgroundColor:
+          {!errorfetching ? (
+            <Grid item>
+              <Button
+                variant={
                   podRes &&
                   props.favorites.some((ele) => ele.date === podRes.date)
-                    ? "#0000FF"
-                    : "white",
-                color:
+                    ? "contained"
+                    : "outlined"
+                }
+                style={{
+                  backgroundColor:
+                    podRes &&
+                    props.favorites.some((ele) => ele.date === podRes.date)
+                      ? "#0000FF"
+                      : "white",
+                  color:
+                    podRes &&
+                    props.favorites.some((ele) => ele.date === podRes.date)
+                      ? "white"
+                      : "black",
+                }}
+                onClick={
                   podRes &&
                   props.favorites.some((ele) => ele.date === podRes.date)
-                    ? "white"
-                    : "black",
-              }}
-              onClick={
-                podRes &&
+                    ? removeFromFav
+                    : addToFav
+                }
+              >
+                {podRes &&
                 props.favorites.some((ele) => ele.date === podRes.date)
-                  ? removeFromFav
-                  : addToFav
-              }
-            >
-              {podRes && props.favorites.some((ele) => ele.date === podRes.date)
-                ? "Remove from Favorites"
-                : "Set Favorite"}
-            </Button>
-          </Grid>
+                  ? "Remove from Favorites"
+                  : "Add to Favorites"}
+              </Button>
+            </Grid>
+          ) : null}
           <Grid item>
             <Button variant="outlined" onClick={viewFavorites}>
               View Favorites
