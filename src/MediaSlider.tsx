@@ -40,10 +40,6 @@ const MediaSlider: React.FunctionComponent<GeneralObject> = (props) => {
   const [tmrErr, setTmrErr] = useState(false);
 
   useEffect(() => {
-    props.updateFromFirestore();
-  }, []);
-
-  useEffect(() => {
     if (selectedDate) {
       axios
         .get(
