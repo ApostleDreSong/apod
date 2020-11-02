@@ -1,4 +1,4 @@
 export function saveToLocalStorage (response){
-  localStorage.setItem("photoOfTheDay", JSON.stringify(response));
+  window.localStorage.setItem("photoOfTheDay", JSON.stringify(response));
   return 'saved';
 };

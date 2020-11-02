@@ -6,6 +6,12 @@
         "@babel/preset-typescript"
     ],
     "plugins": [
-        "@babel/plugin-syntax-flow"
+        "@babel/plugin-syntax-flow",
+        [
+          "@babel/plugin-transform-runtime",
+          {
+            "regenerator": true
+          }
+        ]
     ]
 }

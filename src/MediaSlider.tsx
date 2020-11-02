@@ -147,81 +147,66 @@ const MediaSlider: React.FunctionComponent<GeneralObject> = (props) => {
         <Grid
           item
           sm={3}
-          style={{ cursor: "pointer", textAlign: "center" }}
+          className="change"
           onClick={() => previousDay()}
         >
           <ArrowBackIcon fontSize="large" />
           <p>Prev Day</p>
           {ydayErr ? (
             <div
-              style={{
-                height: "50px",
-                width: "100%",
-                textAlign: "center",
-              }}
+              className="preview"
             >
               No picture Yesterday
             </div>
           ) : (
-            <img
-              src={yesterdaysPreview.url}
-              alt={yesterdaysPreview.title}
-              width="50px"
-              height="50px"
-            />
-          )}
+              <img
+                src={yesterdaysPreview.url}
+                alt={yesterdaysPreview.title}
+                width="50px"
+                height="50px"
+              />
+            )}
         </Grid>
         <Grid
           item
           sm={6}
+          className="main"
           style={{
-            overflow: "hidden",
-            height: "500px",
             border: errorfetching ? "1px solid black" : "none",
           }}
         >
           {errorfetching ? (
             <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              className="no-image"
             >
               Oops! No image today
             </div>
           ) : (
-            <img width="100%" src={podRes && podRes.url} />
-          )}
+              <img width="100%" src={podRes && podRes.url} />
+            )}
         </Grid>
         <Grid
           item
           sm={3}
-          style={{ cursor: "pointer", textAlign: "center" }}
+          className="change"
           onClick={() => nextDay()}
         >
           <ArrowForwardIcon fontSize="large" />
           <p>Next Day</p>
           {tmrErr ? (
             <div
-              style={{
-                height: "50px",
-                width: "100%",
-                textAlign: "center",
-              }}
+              className="preview"
             >
               No picture Tomorrow
             </div>
           ) : (
-            <img
-              src={tomorrowsPreview.url}
-              alt={tomorrowsPreview.title}
-              width="50px"
-              height="50px"
-            />
-          )}
+              <img
+                src={tomorrowsPreview.url}
+                alt={tomorrowsPreview.title}
+                width="50px"
+                height="50px"
+              />
+            )}
         </Grid>
       </Grid>
       <Grid container justify="center" style={{ marginTop: "20px" }}>
@@ -271,22 +256,12 @@ const MediaSlider: React.FunctionComponent<GeneralObject> = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <div
-        style={{ textAlign: "center", lineHeight: "26px", margin: "20px 50px" }}
-      >
+      <div className="explanation">
         {podRes && podRes.explanation}
       </div>
       {showFav ? (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100vh",
-            overflow: "auto",
-            backgroundColor: "#202020",
-          }}
+          className="favorites"
         >
           <FavoritesComponent closeModal={closeModal} />
         </div>
